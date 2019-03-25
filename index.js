@@ -5,7 +5,6 @@ const fs = require('fs')
 const start = async () => {
   const browser = await puppeteer.launch({
     headless: false,
-    executablePath: '/opt/google/chrome/google-chrome',
     userDataDir: './user_data'
   })
   const page = await browser.newPage()
