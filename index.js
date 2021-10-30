@@ -1,6 +1,9 @@
 const puppeteer = require('puppeteer');
-const config = require('./config')
-const fs = require('fs')
+const config = require('./config');
+const variables = require('./variables');
+const {sendBtn, profileDiv} = require('./variables');
+const fs = require('fs');
+const { send } = require('process');
 
 const start = async () => {
   const browser = await puppeteer.launch({
@@ -12,7 +15,9 @@ const start = async () => {
   'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.39 Safari/537.36';
   await page.setUserAgent(userAgent);
   await page.goto('http://web.whatsapp.com')
-  await page.waitForSelector('._2Uo0Z', {timeout: 60000})
+
+
+  await page.waitForSelector(profileDiv, {timeout: 60 * 1000})
   
   console.log('logged in')
 
@@ -27,12 +32,13 @@ const start = async () => {
       await dialog.accept()
     }) 
     try {
-      await page.waitForSelector('._2S1VP', {timeout: 10000})
+      await page.waitForSelector(sendBtn, {timeout: 30 * 1000})
     } catch (error) {
-      console.log('invalid phone number ' +contact+' in line-'+eval(i+1))
+      console.log(error)
+      // console.log('invalid phone number ' +contact+' in line-'+eval(i+1))
       return;
     }
-    await page.focus('._2S1VP.copyable-text.selectable-text')
+    await page.focus(sendBtn)
     await page.keyboard.press(String.fromCharCode(13))
     console.log('success send message to '+contact)
   }
